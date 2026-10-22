@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { displayDate, size } from "../api";
+import StillroomMark from "./StillroomMark.vue";
 
 const props = defineProps({
   document: { type: Object, required: true },
@@ -38,22 +39,48 @@ function startEdit() {
 }
 
 function save() {
-  emit("save", props.document, {
-    category: draft.value.category,
-    title: draft.value.title,
-    document_date: draft.value.document_date || null,
-    tags: draft.value.tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean)
-      .slice(0, 5),
-  });
-  editing.value = false;
+  const documentId = props.document.id;
+  emit(
+    "save",
+    props.document,
+    {
+      category: draft.value.category,
+      title: draft.value.title,
+      document_date: draft.value.document_date || null,
+      tags: draft.value.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 5),
+    },
+    () => {
+      if (props.document.id === documentId) editing.value = false;
+    },
+  );
 }
 </script>
 
 <template>
   <div class="detail-panel">
+    <ol class="review-steps" aria-label="Filing progress">
+      <li class="done">1 <span>Imported</span></li>
+      <li
+        :class="{
+          done: document.reviewed_at || document.state === 'archived',
+          active: document.state !== 'archived' && !document.reviewed_at,
+        }"
+      >
+        2 <span>Review</span>
+      </li>
+      <li
+        :class="{
+          done: document.state === 'archived',
+          active: document.state === 'ready' && document.reviewed_at,
+        }"
+      >
+        3 <span>Filed</span>
+      </li>
+    </ol>
     <div class="detail-top">
       <span class="micro-label">FILE REVIEW</span
       ><a class="download-link" :href="`/api/documents/${document.id}/file`"
@@ -75,7 +102,7 @@ function save() {
 
     <template v-if="document.state === 'inbox'"
       ><div class="waiting-card">
-        <span>✳</span>
+        <StillroomMark class="waiting-icon" />
         <h3>Ready for a second pass.</h3>
         <p>
           Stillroom will read this file and propose a name, category, and

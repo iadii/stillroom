@@ -63,19 +63,17 @@ select:focus-visible {
   margin-bottom: 66px;
 }
 .brand-mark {
-  font-family: Newsreader, serif;
-  font-size: 27px;
   background: #e1e8bd;
   color: #34523d;
-  width: 35px;
-  height: 35px;
+  width: 38px;
+  height: 38px;
   border-radius: 9px;
   display: grid;
   place-items: center;
-  padding-top: 5px;
 }
-.brand-mark span {
-  color: #ca795b;
+.brand-mark svg {
+  width: 27px;
+  height: 27px;
 }
 .side-label {
   font-size: 9px;
@@ -129,8 +127,9 @@ select:focus-visible {
   padding: 18px;
   margin-bottom: 25px;
 }
-.side-note > span {
-  font-size: 24px;
+.side-mark {
+  width: 31px;
+  height: 31px;
   color: #daeba7;
 }
 .side-note strong {
@@ -267,12 +266,78 @@ select:focus-visible {
   max-width: 525px;
   margin: 0;
 }
-.hero-sun {
-  font-size: 115px;
-  font-family: Newsreader, serif;
-  color: #c4d5ac;
-  line-height: 1;
-  margin-right: 36px;
+.hero-art {
+  width: 230px;
+  height: 198px;
+  flex: none;
+  margin-right: 10px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: #e9f0e5;
+  border: 1px solid #dce9d6;
+}
+.hero-art-sheet {
+  position: absolute;
+  top: 25px;
+  left: 36px;
+  width: 115px;
+  height: 126px;
+  padding: 27px 17px;
+  transform: rotate(-11deg);
+  border-radius: 8px;
+  border: 1px solid #cfdbcb;
+  background: #fff;
+  box-shadow: 0 12px 25px #34523d1a;
+}
+.hero-art-sheet span {
+  display: block;
+  height: 5px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background: #dce9d6;
+}
+.hero-art-sheet span:nth-child(2) {
+  width: 70%;
+}
+.hero-art-sheet span:nth-child(3) {
+  width: 85%;
+}
+.hero-art-folder {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  width: 112px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  color: #e1e8bd;
+  border-radius: 14px;
+  background: #315041;
+  transform: rotate(8deg);
+  box-shadow: 0 13px 23px #34523d33;
+}
+.hero-art-folder svg {
+  width: 70px;
+  height: 70px;
+}
+.hero-art-note {
+  position: absolute;
+  right: -14px;
+  bottom: -13px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: 1px solid #dce9d6;
+  background: #fff;
+  color: #52715a;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 8px 22px #34523d1a;
+}
+.hero-art-note span {
+  color: #568866;
+  margin-right: 5px;
 }
 .stats {
   display: grid;
@@ -684,6 +749,38 @@ select:focus-visible {
   padding: 25px;
   min-width: 0;
 }
+.review-steps {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 0 18px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid #e8ede4;
+  list-style: none;
+}
+.review-steps li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a1afa0;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.review-steps li + li::before {
+  content: "/";
+  color: #cbd8c7;
+  margin-right: 6px;
+}
+.review-steps li.done {
+  color: #4a825c;
+}
+.review-steps li.active {
+  color: #365c3f;
+}
+.review-steps li span {
+  font-weight: 500;
+}
 .detail-top {
   display: flex;
   align-items: center;
@@ -724,8 +821,9 @@ select:focus-visible {
   padding: 35px 25px;
   margin-top: 29px;
 }
-.waiting-card > span {
-  font-size: 31px;
+.waiting-icon {
+  width: 45px;
+  height: 45px;
   color: #83a27e;
 }
 .waiting-card h3 {
@@ -967,6 +1065,10 @@ select:focus-visible {
   color: #759377;
   font-size: 16px;
 }
+.activity-mark {
+  width: 19px;
+  height: 19px;
+}
 .activity-row > div {
   flex: 1;
   min-width: 0;
@@ -1091,9 +1193,13 @@ select:focus-visible {
   .workspace-grid {
     grid-template-columns: 1fr;
   }
-  .hero-sun {
-    font-size: 80px;
-    margin-right: 10px;
+  .hero-art {
+    width: 178px;
+    height: 163px;
+    margin-right: 0;
+  }
+  .hero-art-note {
+    right: -5px;
   }
   .detail-panel {
     order: 2;
@@ -1112,23 +1218,29 @@ select:focus-visible {
     z-index: 5;
     flex-direction: row;
     align-items: center;
-    padding: 7px 14px;
+    padding: 4px 8px;
   }
   .brand {
-    margin: 0 13px 0 0;
-  }
-  .brand-mark {
-    width: 29px;
-    height: 29px;
-    font-size: 22px;
+    display: none;
   }
   .sidebar nav {
     display: flex;
     gap: 4px;
+    width: 100%;
   }
   .sidebar nav button {
-    width: 42px;
-    height: 40px;
+    flex: 1;
+    height: 51px;
+    flex-direction: column;
+    gap: 3px;
+    padding: 5px 2px;
+    font-size: 9px;
+    line-height: 1;
+    text-align: center;
+  }
+  .sidebar nav button > span {
+    font-size: 17px;
+    line-height: 1;
   }
   .main {
     padding-bottom: 59px;
@@ -1147,7 +1259,7 @@ select:focus-visible {
   .page-head h1 {
     font-size: 54px;
   }
-  .hero-sun {
+  .hero-art {
     display: none;
   }
   .stats {

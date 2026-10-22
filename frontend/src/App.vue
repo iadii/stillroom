@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from "vue";
 import { displayDate, request } from "./api";
 import DocumentDetail from "./components/DocumentDetail.vue";
 import DocumentRow from "./components/DocumentRow.vue";
+import StillroomMark from "./components/StillroomMark.vue";
 import UploadPanel from "./components/UploadPanel.vue";
 
 const view = ref("overview");
@@ -142,12 +143,14 @@ function analyze(doc) {
     { label: `Reading ${doc.original_name}…` },
   );
 }
-function saveProposal(doc, body) {
-  return runAction(
+async function saveProposal(doc, body, onSuccess) {
+  const result = await runAction(
     `/documents/${doc.id}/proposal`,
     "Your correction is saved. Review it again before approval.",
     { method: "PUT", body },
   );
+  if (result) onSuccess();
+  return result;
 }
 function approve(doc) {
   return runAction(
@@ -248,8 +251,7 @@ function eventLabel(action) {
   <div class="app-shell">
     <aside class="sidebar">
       <button class="brand" @click="navigate('overview')">
-        <span class="brand-mark">s<span>.</span></span
-        ><span>stillroom</span>
+        <span class="brand-mark"><StillroomMark /></span><span>stillroom</span>
       </button>
       <span class="side-label">WORKSPACE</span>
       <nav aria-label="Main navigation">
@@ -277,7 +279,9 @@ function eventLabel(action) {
       </nav>
       <div class="side-spacer"></div>
       <div class="side-note">
-        <span>✳</span><strong>One less pile<br />to think about.</strong>
+        <StillroomMark class="side-mark" /><strong
+          >One less pile<br />to think about.</strong
+        >
         <p>Import. Review. File. Undo whenever you need to.</p>
       </div>
       <div class="connection">
@@ -313,7 +317,7 @@ function eventLabel(action) {
         v-if="notice"
         class="notice"
         :class="{ error: isError }"
-        role="status"
+        :role="isError ? 'alert' : 'status'"
       >
         {{ notice }}<button @click="notice = ''" aria-label="Dismiss">×</button>
       </div>
@@ -333,7 +337,15 @@ function eventLabel(action) {
               waits for your approval. Every move leaves a trail back.
             </p>
           </div>
-          <span class="hero-sun">✺</span>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-art-sheet">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="hero-art-folder">
+              <StillroomMark />
+            </div>
+            <div class="hero-art-note"><span>✓</span> Filed with care</div>
+          </div>
         </div>
         <div class="stats">
           <div>
@@ -456,7 +468,7 @@ function eventLabel(action) {
               :disabled="busy"
               @click="analyzeAll"
             >
-              ✳ Analyze {{ stats.inbox }}</button
+              Analyze {{ stats.inbox }} →</button
             ><button
               v-if="view === 'inbox' && stats.approved"
               class="button primary"
@@ -550,13 +562,15 @@ function eventLabel(action) {
         </div>
         <div class="activity-list">
           <div v-for="event in events" :key="event.id" class="activity-row">
-            <span class="activity-icon">{{
-              event.action === "archived"
-                ? "↗"
-                : event.action === "undone"
-                  ? "↶"
-                  : "✳"
-            }}</span>
+            <span class="activity-icon">
+              <StillroomMark
+                v-if="event.action !== 'archived' && event.action !== 'undone'"
+                class="activity-mark"
+              />
+              <template v-else>{{
+                event.action === "archived" ? "↗" : "↶"
+              }}</template>
+            </span>
             <div>
               <strong>{{ eventLabel(event.action) }}</strong
               ><small>{{
