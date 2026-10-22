@@ -16,15 +16,15 @@ The deliberate pause is the point: the repetitive reading and naming is automate
 
 ## Demo
 
-**[Watch the 25-second real browser walkthrough]({{VIDEO_URL}}).** It shows upload, a live Groq classification, the source quote, a title correction, approval, archive, activity history, and Undo. The document is a fictional community garden note, and the recording ran against an isolated temporary database.
+**[Watch or download the 25-second real browser walkthrough](https://raw.githubusercontent.com/iadii/stillroom/main/docs/demo/stillroom-demo.webm).** It shows upload, a live Groq classification, the source quote, a title correction, approval, archive, activity history, and Undo. The document is a fictional community garden note, and the recording ran against an isolated temporary database.
 
-[Full proposal screenshot]({{PROPOSAL_IMAGE_URL}}) · [Activity trail screenshot]({{ACTIVITY_IMAGE_URL}})
+[Full proposal screenshot](https://raw.githubusercontent.com/iadii/stillroom/main/docs/demo/proposal.png) · [Activity trail screenshot](https://raw.githubusercontent.com/iadii/stillroom/main/docs/demo/activity.png)
 
 In the recorded run, the model put the note under **Projects**, proposed **Community Garden Fall Planting Prep**, and cited the exact line **“This is an internal project note, not a receipt.”** It extracted the date from **“October 22, 2026.”** I changed the title to **Autumn garden workday**, approved it, filed it, and undid the move. The app recorded all six events. The proposal was genuine model output; no canned response was substituted.
 
 ## Code
 
-**[Stillroom source and setup instructions]({{REPOSITORY_URL}})** · MIT licensed. The project was started during this challenge window, with the first local commit on October 22, 2026.
+**[Stillroom source and setup instructions](https://github.com/iadii/stillroom)** · MIT licensed. The project was started during this challenge window, with the first local commit on October 22, 2026.
 
 ## How I Built It
 
