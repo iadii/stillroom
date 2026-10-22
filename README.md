@@ -4,6 +4,8 @@
 
 Built during the Hacktoberfest 2026 Week 3 **Slow and Steady** challenge (October 19–25, 2026). The [challenge prompt](https://dev.to/challenges/hacktoberfest-week3-2026-10-19) specifically suggests a file and inbox tidier. Stillroom adds evidence-based suggestions and a human-controlled archive workflow.
 
+[Read the Week 3 submission on DEV](https://dev.to/iadii/stillroom-a-document-inbox-that-does-the-sorting-and-waits-for-you-128k).
+
 **[Watch the real 25-second walkthrough](docs/demo/stillroom-demo.webm)** · [See the source-backed proposal](docs/demo/proposal.png) · [See the activity trail](docs/demo/activity.png). The recording uses only a fictional sample document and a live Groq model response.
 
 ## What it does
