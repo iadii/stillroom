@@ -1,0 +1,24 @@
+{
+  "name": "stillroom-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "format": "prettier --write src public/index.html webpack.config.js package.json",
+    "format:check": "prettier --check src public/index.html webpack.config.js package.json"
+  },
+  "dependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.5.0",
+    "css-loader": "^7.1.0",
+    "html-webpack-plugin": "^5.6.0",
+    "prettier": "^3.6.0",
+    "vue-loader": "^17.4.0",
+    "vue-style-loader": "^4.1.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^6.0.0"
+  }
+}
