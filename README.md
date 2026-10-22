@@ -61,6 +61,8 @@ cd ../frontend && npm run format:check && npm run build
 
 The tests cover the review/approval/undo lifecycle, collision handling, duplicate uploads, source quote validation, invalid files, local write protection, and safe CSV export. A live Groq classification requires a real key and is not faked in the UI.
 
+GitHub Actions also runs the locked backend tests and frontend format/build checks on pushes and pull requests.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). This project is MIT licensed.

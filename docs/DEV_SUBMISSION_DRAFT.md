@@ -16,6 +16,8 @@ The point is to make the repetitive part fast while preserving the part I should
 
 **Add a short screen recording or screenshot sequence here before publishing.** The script in `docs/DEMO.md` walks through import, evidence review, correction, approval, archive, collision handling, search, export, and undo. Use the fictional files in `docs/samples/`.
 
+In my local end-to-end run on October 22, the model classified the fictional community garden note under **Projects**, proposed the title **Community Garden Fall Planting Prep**, cited the exact sentence **“This is an internal project note, not a receipt.”**, and extracted **October 22, 2026** from the source. The API refused to file it before approval, then moved it after approval, and finally restored it to the inbox with Undo.
+
 ## Code
 
 **Add the public repository link here before publishing.** Include a link to the README and setup instructions. The project is MIT licensed.
