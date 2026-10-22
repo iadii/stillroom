@@ -1,5 +1,5 @@
 ---
-title: "Stillroom: a document inbox that proposes, waits, and lets you undo"
+title: "Stillroom: a document inbox that does the sorting and waits for you"
 published: false
 tags: devchallenge, hf26challenge
 ---
@@ -8,38 +8,40 @@ tags: devchallenge, hf26challenge
 
 ## What I Built
 
-I built **Stillroom** for the small pile of documents that never gets filed because naming, sorting, and checking each one is tedious. Upload a PDF or text file and Stillroom extracts its text, proposes a useful name, a category, a date, tags, and a destination. Its proposal comes with an exact quote from the document. I can correct the proposal, approve it, and then move the file. I can undo that move later.
+My downloads folder does not need another clever filename. It needs someone to read the file, decide what it is, and put it somewhere I can find it later. I kept putting off those little decisions, so I built **Stillroom**.
 
-The point is to make the repetitive part fast while preserving the part I should decide myself. Nothing is moved automatically, and the source file is visible beside the proposed classification.
+Stillroom is a local document inbox. I can drop in a PDF, TXT, Markdown, or CSV file. An open-weight model proposes a category, useful title, document date, summary, tags, and archive path. It must also copy a quote from the file to explain the choice. I see the original text next to the proposal, can correct it, and must approve the move. If I change my mind, Undo brings the original back.
+
+The deliberate pause is the point: the repetitive reading and naming is automated, while the consequential file move stays under my control. It also supports batch analysis and filing once proposals have been approved.
 
 ## Demo
 
-**Add a deployed link or a short video demo here before publishing.** The official rules require one of those formats. The script in `docs/DEMO.md` walks through import, evidence review, correction, approval, archive, collision handling, search, export, and undo. Use the fictional files in `docs/samples/`.
+**[Watch the 25-second real browser walkthrough]({{VIDEO_URL}}).** It shows upload, a live Groq classification, the source quote, a title correction, approval, archive, activity history, and Undo. The document is a fictional community garden note, and the recording ran against an isolated temporary database.
 
-In my local end-to-end run on October 22, the model classified the fictional community garden note under **Projects**, proposed the title **Community Garden Fall Planting Prep**, cited the exact sentence **“This is an internal project note, not a receipt.”**, and extracted **October 22, 2026** from the source. The API refused to file it before approval, then moved it after approval, and finally restored it to the inbox with Undo.
+[Full proposal screenshot]({{PROPOSAL_IMAGE_URL}}) · [Activity trail screenshot]({{ACTIVITY_IMAGE_URL}})
+
+In the recorded run, the model put the note under **Projects**, proposed **Community Garden Fall Planting Prep**, and cited the exact line **“This is an internal project note, not a receipt.”** It extracted the date from **“October 22, 2026.”** I changed the title to **Autumn garden workday**, approved it, filed it, and undid the move. The app recorded all six events. The proposal was genuine model output; no canned response was substituted.
 
 ## Code
 
-**Add the public repository link here before publishing.** Include a link to the README and setup instructions. The project is MIT licensed.
+**[Stillroom source and setup instructions]({{REPOSITORY_URL}})** · MIT licensed. The project was started during this challenge window, with the first local commit on October 22, 2026.
 
 ## How I Built It
 
-The Vue 3 interface talks to a FastAPI server running on the same local origin. Python extracts PDF or UTF-8 text locally. The server sends up to 30,000 characters of extracted text to Groq's hosted `openai/gpt-oss-120b` model, requesting strict JSON output. It then checks that the evidence quote really occurs in the source. If a proposed date cannot be tied to an exact source phrase and parsed into the same date, Stillroom drops that date.
+Vue 3 provides the inbox, proposal review, archive search, bulk actions, and activity trail. FastAPI extracts text locally and sends up to 30,000 characters to Groq's hosted `openai/gpt-oss-120b` model using strict JSON schema output. Python checks that the model's evidence quote appears in the extracted text. A proposed date is dropped unless its source phrase is present and parses to the same calendar date.
 
-SQLite stores document metadata and an activity trail. Original files are staged in a local inbox. An explicit approval is required before a file move. Archive paths use a sanitized title and fixed category; filename collisions get numbered suffixes. Undo moves the original back and clears the prior approval. SHA-256 detects duplicate uploads.
+SQLite holds metadata and the event log; originals are staged locally. The model never chooses a filesystem path directly. The server builds one from a fixed category and sanitized title. Identical uploads are rejected by SHA-256, collisions receive numbered names, and the archive move requires explicit human approval. Editing clears an earlier approval; Undo restores the file to the inbox and clears approval again.
 
-I used tests to cover the workflow, including approval enforcement, corrections, undo, duplicate uploads, collisions, bad files, quote validation, cross-origin write protection, and safe CSV export. The frontend has an overview, inbox, archive, activity trail, bulk actions, search, and a side-by-side source review.
+That separation helped me test the awkward cases: a model with no valid quote, an ambiguous date, a duplicate upload, two files with the same proposed name, an attempted move before approval, and a reversed move. The backend has automated workflow tests, and GitHub Actions is configured to run those plus frontend formatting and production build checks.
 
 ## Why Does Open Innovation Matter?
 
-The classification step is built around an open-weight model, so the model choice is inspectable and replaceable. Groq is the current inference host because it offers the model through an API; the interface between extraction, structured proposal, validation, and review is explicit. This makes it possible to move inference to another host or local runtime later without redesigning the archive workflow.
+The model is [GPT-OSS 120B, an open-weight model](https://openai.com/index/introducing-gpt-oss/). The weights can be inspected and run through other infrastructure; I chose Groq for hosted inference during this build. That gives the document workflow an exit path from this particular provider. The semantic step—deciding whether a note is a receipt, project, or reading material—is where the model matters. Rules alone would push the sorting work back onto the user.
 
-That portability matters for a personal document tool. The current build **does send extracted text to Groq when Analyze is pressed**, so I do not claim it is offline or that document text never leaves the machine. The originals, SQLite database, and archive stay local. A future local inference adapter could remove the hosted text transfer while preserving the review flow.
+This version **is not offline**. Pressing Analyze sends extracted text to Groq. The originals, SQLite database, and archive remain local. A local inference adapter could later remove that network transfer, but I do not claim it exists today. Open weights matter here because model hosting is a choice, while evidence checks and human approval stay part of the application regardless of host.
 
-Open AI is useful here because the messy part is semantic: a filename rarely says whether a file is a receipt, project note, or reading material. Rules alone would make users do the sorting again. The model proposes; deterministic code checks the quote and controls the file move.
+## The Lazy Payoff
 
-## What I Learned
+Stillroom turns several blank decisions into one reviewable proposal: what the file is, what to call it, which date matters, what tags fit, and where it should live. I have not measured a manual-versus-Stillroom time saving, so I won't invent one. The recorded workflow demonstrates the narrower claim: one real document goes from an unnamed pile to a verifiable, reversible archive decision without manual filename or folder construction.
 
-The biggest design choice was to keep model output away from filesystem operations. The AI suggests metadata, while the server validates evidence and the person approves the move. This makes wrong classifications correctable and file operations auditable. It also made the failure cases concrete: scanned PDFs need OCR, date extraction must be conservative, and a process crash between a filesystem move and database commit may require manual recovery.
-
-<!-- Add a real usage observation or measured time saving here if you collect one. Do not invent a benchmark. -->
+There are limits. Scanned PDFs need OCR first, text analysis is capped, and this local single-user build should not be exposed as a public service without authentication. I would rather show those edges than imply the model is always right.
